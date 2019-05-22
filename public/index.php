@@ -31,26 +31,6 @@ $capsule->setAsGlobal();
 // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
 $capsule->bootEloquent();
 
-function printElement($job)
-{
-//    if (!$job->visible) {
-//        return;
-//    }
-    echo("
-        <li class='work-position'>
-            <h5>" . $job->title . "</h5>
-            <p>" . $job->description . "</p>
-            <p>" . $job->getDurationAsString() . "</p>
-            <strong>Achievements:</strong>
-            <ul>
-                <li>Lorem ipsum dolor sit amet, 80% consectetuer adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, 80% consectetuer adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, 80% consectetuer adipiscing elit.</li>
-            </ul>
-        </li>
-    ");
-}
-
 $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
@@ -89,18 +69,7 @@ if (!$route) {
     $actionName = $handlerData['action'];
 
     $controller = new $controllerName;
-    $controller->$actionName($request);
-//    var_dump($route->handler);
-//    require($route->handler);
+    $response = $controller->$actionName($request);
+
+    echo($response->getBody());
 }
-
-//var_dump($route->handler);
-
-//var_dump($request->getUri()->getPath());
-//$route = $_GET['route'] ?? '/';
-//if($route == '/') {
-//    require('../index.php');
-//} elseif ($route == 'addJob') {
-//    require('../addJob.php');
-//}
-
