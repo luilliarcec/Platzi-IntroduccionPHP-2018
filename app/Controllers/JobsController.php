@@ -5,10 +5,11 @@ namespace App\Controllers;
 use App\Models\Job;
 use Exception;
 use Respect\Validation\Validator as validation;
+use Zend\Diactoros\ServerRequest;
 
 class JobsController extends BaseController
 {
-    public function getAddJobAction($request)
+    public function getAddJobAction(ServerRequest $request)
     {
         $responseMessage = null;
         if ($request->getMethod() == 'POST') {
@@ -22,24 +23,22 @@ class JobsController extends BaseController
 
                 $files = $request->getUploadedFiles();
                 $image = $files['image'];
-
+                $rutaImg = null;
                 if ($image->getError() == UPLOAD_ERR_OK) {
                     $fileName = $image->getClientFilename();
-                    $image->moveTo("uploads/$fileName");
-
-                    $job = new Job();
-                    $job->title = $postData['title'];
-                    $job->description = $postData['description'];
-                    $job->imageUrl = "uploads/$fileName";
-                    $job->save();
+                    $rutaImg = "uploads/$fileName";
+                    $image->moveTo($rutaImg);
                 }
 
-//                $job = new Job();
-//                $job->title = $postData['title'];
-//                $job->description = $postData['description'];
-//                $job->save();
+                $job = new Job();
+                $job->title = $postData['title'];
+                $job->description = $postData['description'];
+                $job->imageUrl = $rutaImg;
+                $job->visible = isset($postData['visible']) ? true : false;
+                $job->months = $postData['tiempo'];
+                $job->save();
 
-                $responseMessage = 'Saved';
+                $responseMessage = 'Guardado';
             } catch (Exception $e) {
                 $responseMessage = $e->getMessage();
             }
