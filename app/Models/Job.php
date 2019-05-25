@@ -1,6 +1,9 @@
 <?php
 
+
 namespace App\Models;
+
+
 use Illuminate\Database\Eloquent\Model;
 //require_once('BaseElement.php');
 //require_once('Printable.php');
