@@ -20,11 +20,24 @@ class JobsController extends BaseController
             try {
                 $jobValidator->assert($postData); // true
 
+                $files = $request->getUploadedFiles();
+                $image = $files['image'];
 
-                $job = new Job();
-                $job->title = $postData['title'];
-                $job->description = $postData['description'];
-                $job->save();
+                if ($image->getError() == UPLOAD_ERR_OK) {
+                    $fileName = $image->getClientFilename();
+                    $image->moveTo("uploads/$fileName");
+
+                    $job = new Job();
+                    $job->title = $postData['title'];
+                    $job->description = $postData['description'];
+                    $job->imageUrl = "uploads/$fileName";
+                    $job->save();
+                }
+
+//                $job = new Job();
+//                $job->title = $postData['title'];
+//                $job->description = $postData['description'];
+//                $job->save();
 
                 $responseMessage = 'Saved';
             } catch (Exception $e) {
