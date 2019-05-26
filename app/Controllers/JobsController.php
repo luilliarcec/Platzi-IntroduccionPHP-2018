@@ -44,8 +44,8 @@ class JobsController extends BaseController
             }
         }
 
-        return ($this->renderHTML('addJob.twig', [
+        return $this->renderHTML('admin/addJob.twig', [
             'responseMessage' => $responseMessage
-        ]));
+        ]);
     }
 }

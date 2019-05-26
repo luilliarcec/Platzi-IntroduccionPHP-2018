@@ -4,7 +4,6 @@
 namespace App\Controllers;
 
 
-use App\Models\Job;
 use App\Models\Project;
 use Exception;
 use Respect\Validation\Validator as validation;
@@ -14,7 +13,7 @@ class ProjectsController extends BaseController
 {
     public function getAddProject()
     {
-        return ($this->renderHTML('addProject.twig'));
+        return $this->renderHTML('admin/addProject.twig');
     }
 
     public function postSaveProject(ServerRequest $request)
@@ -49,8 +48,8 @@ class ProjectsController extends BaseController
             $responseMessage = $e->getMessage();
         }
 
-        return ($this->renderHTML('addProject.twig', [
+        return $this->renderHTML('admin/addProject.twig', [
             'responseMessage' => $responseMessage
-        ]));
+        ]);
     }
 }

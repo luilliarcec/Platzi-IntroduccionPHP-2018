@@ -7,6 +7,8 @@ error_reporting(E_ALL);
 
 require_once('../vendor/autoload.php');
 
+session_start();
+
 define('BASE_URL', '/Platzi-IntroduccionPHP-2018/');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -48,59 +50,96 @@ $map->get('index', BASE_URL, [
     'action' => 'IndexAction'
 ]);
 
-$map->get('addJobs', BASE_URL . 'jobs/add', [
-    'controller' => 'App\Controllers\JobsController',
-    'action' => 'getAddJobAction'
-]);
-
-$map->post('saveJobs', BASE_URL . 'jobs/add', [
-    'controller' => 'App\Controllers\JobsController',
-    'action' => 'getAddJobAction'
-]);
-
-$map->get('addProjects', BASE_URL . 'projects/add', [
-    'controller' => 'App\Controllers\ProjectsController',
-    'action' => 'getAddProject'
-]);
-
-$map->post('saveProjects', BASE_URL . 'projects/add', [
-    'controller' => 'App\Controllers\ProjectsController',
-    'action' => 'postSaveProject'
-]);
-
-$map->get('addUser', BASE_URL . 'users/add', [
-    'controller' => 'App\Controllers\UsersController',
-    'action' => 'getAddUser'
-]);
-
-$map->post('saveUsers', BASE_URL . 'users/add', [
-    'controller' => 'App\Controllers\UsersController',
-    'action' => 'postSaveUser'
-]);
-
 $map->get('loginForm', BASE_URL . 'login', [
     'controller' => 'App\Controllers\AuthController',
     'action' => 'getLogin'
 ]);
 
-//$map->post('saveUsers', BASE_URL . 'users/add', [
-//    'controller' => 'App\Controllers\UsersController',
-//    'action' => 'postAddUserAction'
-//]);
+$map->post('auth', BASE_URL . 'auth', [
+    'controller' => 'App\Controllers\AuthController',
+    'action' => 'postLogin'
+]);
+
+$map->get('logout', BASE_URL . 'logout', [
+    'controller' => 'App\Controllers\AuthController',
+    'action' => 'getLogout'
+]);
+
+// RUTAS DE ADMIN
+$map->get('addJobs', BASE_URL . 'jobs/add', [
+    'controller' => 'App\Controllers\JobsController',
+    'action' => 'getAddJobAction',
+    'auth' => true
+]);
+
+$map->post('saveJobs', BASE_URL . 'jobs/add', [
+    'controller' => 'App\Controllers\JobsController',
+    'action' => 'getAddJobAction',
+    'auth' => true
+]);
+
+$map->get('addProjects', BASE_URL . 'projects/add', [
+    'controller' => 'App\Controllers\ProjectsController',
+    'action' => 'getAddProject',
+    'auth' => true
+]);
+
+$map->post('saveProjects', BASE_URL . 'projects/add', [
+    'controller' => 'App\Controllers\ProjectsController',
+    'action' => 'postSaveProject',
+    'auth' => true
+]);
+
+$map->get('addUser', BASE_URL . 'users/add', [
+    'controller' => 'App\Controllers\UsersController',
+    'action' => 'getAddUser',
+    'auth' => true
+]);
+
+$map->post('saveUsers', BASE_URL . 'users/add', [
+    'controller' => 'App\Controllers\UsersController',
+    'action' => 'postSaveUser',
+    'auth' => true
+]);
+
+$map->get('admin', BASE_URL . 'admin', [
+    'controller' => 'App\Controllers\AdminController',
+    'action' => 'getIndex',
+    'auth' => true
+]);
+// FIN RUTAS DE ADMIN
 
 
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
 
 if (!$route) {
-    echo('No route');
+    echo('No route'); //Poner pag 404
 } else {
     $handlerData = $route->handler;
     $controllerName = $handlerData['controller'];
     $actionName = $handlerData['action'];
 
+    $needsAuth = $handlerData['auth'] ?? false;
+    $session = $_SESSION['userId'] ?? null;
+
+    if ($needsAuth && !$session) {
+        $controllerName = 'App\Controllers\AuthController';
+        $actionName = 'getLogout';
+    } elseif ($actionName == 'getLogin' && $session) {
+        $controllerName = 'App\Controllers\AuthController';
+        $actionName = 'getAdmin';
+    }
+
     $controller = new $controllerName;
     $response = $controller->$actionName($request);
 
+    foreach ($response->getHeaders() as $name => $values) {
+        foreach ($values as $value) {
+            header(sprintf('%s: %s', $name, $value), false);
+        }
+    }
+
+    http_response_code($response->getStatusCode());
     echo($response->getBody());
 }

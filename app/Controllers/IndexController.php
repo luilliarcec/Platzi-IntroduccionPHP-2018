@@ -6,18 +6,18 @@ use App\Models\{Job, Project};
 class IndexController extends BaseController
 {
     public function IndexAction()
-    {
-        $jobs = Job::all();
-        $projects = Project::all();
+{
+    $jobs = Job::all();
+    $projects = Project::all();
 
-        $lastname = 'Arce';
-        $name = "Luis $lastname";
-        $limitMonths = 2000;
+    $lastname = 'Arce';
+    $name = "Luis $lastname";
+    $limitMonths = 2000;
 
-        return ($this->renderHTML('index.twig', [
-            'name' => $name,
-            'jobs' => $jobs,
-            'projects' => $projects,
-        ]));
-    }
+    return $this->renderHTML('index.twig', [
+        'name' => $name,
+        'jobs' => $jobs,
+        'projects' => $projects,
+    ]);
+}
 }
