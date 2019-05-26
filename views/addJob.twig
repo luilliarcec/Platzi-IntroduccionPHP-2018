@@ -1,15 +1,12 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-    <h1 class="mb-4 col-8">Add Job</h1>
+    <h1 class="mb-4 col-8">Add Project</h1>
     <form action="" method="post" class="col-8" enctype="multipart/form-data">
-
-
         <div class="alert alert-{% if responseMessage == 'Guardado' %}success{% else %}danger{% endif %}"
                 {% if responseMessage == null %} hidden {% endif %}>
             {{ responseMessage }}
         </div>
-
 
         <div class="form-group">
             <label for="input-title">Title:</label>
@@ -38,6 +35,7 @@
             <input type="checkbox" class="custom-control-input" id="customCheck1" name="visible" value="true" checked>
             <label class="custom-control-label" for="customCheck1">Visible</label>
         </div>
+
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 {% endblock %}

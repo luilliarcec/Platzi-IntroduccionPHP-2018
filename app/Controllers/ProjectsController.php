@@ -12,12 +12,12 @@ use Zend\Diactoros\ServerRequest;
 
 class ProjectsController extends BaseController
 {
-    public function getAddJobAction()
+    public function getAddProject()
     {
         return ($this->renderHTML('addProject.twig'));
     }
 
-    public function postAddJobAction(ServerRequest $request)
+    public function postSaveProject(ServerRequest $request)
     {
         $postData = $request->getParsedBody();
 
@@ -28,19 +28,23 @@ class ProjectsController extends BaseController
             $projectValidator->assert($postData); // true
 
             $files = $request->getUploadedFiles();
-            $image = $files['image'];;
+            $image = $files['image'];
+            $rutaImg = null;
             if ($image->getError() == UPLOAD_ERR_OK) {
                 $fileName = $image->getClientFilename();
-                $image->moveTo("uploads/$fileName");
-
-                $project = new Project();
-                $project->title = $postData['title'];
-                $project->description = $postData['description'];
-                $project->imageUrl = "uploads/$fileName";
-                $project->save();
+                $rutaImg = "uploads/$fileName";
+                $image->moveTo($rutaImg);
             }
 
-            $responseMessage = 'Saved';
+            $project = new Project();
+            $project->title = $postData['title'];
+            $project->description = $postData['description'];
+            $project->imageUrl = $rutaImg;
+            $project->visible = isset($postData['visible']) ? true : false;
+            $project->months = $postData['tiempo'];
+            $project->save();
+
+            $responseMessage = 'Guardado';
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
         }

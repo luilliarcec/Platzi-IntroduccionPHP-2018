@@ -5,10 +5,10 @@
 RewriteEngine On
 
 # Si [%] el archivo que se pide [(REQUEST_FILENAME)] No [!] es un directorio [-d]
-RewriteCond %(REQUEST_FILENAME) !-d
+RewriteCond %{REQUEST_FILENAME} !-d
 
 # Si [%] el archivo que se pide [(REQUEST_FILENAME)] No [!] existe o no es un archivo [-f]
-RewriteCond %(REQUEST_FILENAME) !-f
+RewriteCond %{REQUEST_FILENAME} !-f
 
 # Todo lo que venga irá a index.php
 # [QSA] = toma todos los parámetros pasados por GET, y los incluye en la redirección. También combina parámetros de la url original con la nueva.

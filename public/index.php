@@ -58,6 +58,35 @@ $map->post('saveJobs', BASE_URL . 'jobs/add', [
     'action' => 'getAddJobAction'
 ]);
 
+$map->get('addProjects', BASE_URL . 'projects/add', [
+    'controller' => 'App\Controllers\ProjectsController',
+    'action' => 'getAddProject'
+]);
+
+$map->post('saveProjects', BASE_URL . 'projects/add', [
+    'controller' => 'App\Controllers\ProjectsController',
+    'action' => 'postSaveProject'
+]);
+
+$map->get('addUser', BASE_URL . 'users/add', [
+    'controller' => 'App\Controllers\UsersController',
+    'action' => 'getAddUser'
+]);
+
+$map->post('saveUsers', BASE_URL . 'users/add', [
+    'controller' => 'App\Controllers\UsersController',
+    'action' => 'postSaveUser'
+]);
+
+$map->get('loginForm', BASE_URL . 'login', [
+    'controller' => 'App\Controllers\AuthController',
+    'action' => 'getLogin'
+]);
+
+//$map->post('saveUsers', BASE_URL . 'users/add', [
+//    'controller' => 'App\Controllers\UsersController',
+//    'action' => 'postAddUserAction'
+//]);
 
 
 $matcher = $routerContainer->getMatcher();
